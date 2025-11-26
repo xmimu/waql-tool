@@ -4,15 +4,13 @@ use egui_code_editor::Syntax;
 
 pub fn waql_syntax() -> Syntax {
     Syntax {
-        language: "rust",
-        // case_sensitive: false,
+        language: "waql",
         keywords: BTreeSet::from([
             "object",
             "type",
             "query",
             "search",
             "project",
-            // Expressions
             "children",
             "descendants",
             "this",
