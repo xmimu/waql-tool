@@ -4,7 +4,9 @@ use eframe::{self, CreationContext, egui};
 use egui::{TextBuffer, TextEdit};
 use egui_code_editor::{ColorTheme, Completer, Syntax, Token};
 
-use waql_tool::{waql_query, waql_syntax};
+use serde_json::to_string_pretty;
+use waapi_rs::WaapiClient;
+use waql_tool::waql_syntax;
 
 // UI 常量
 const APP_TITLE: &str = "Waql Tool";
@@ -48,6 +50,8 @@ fn main() -> Result<(), eframe::Error> {
 
 /// WAQL 工具应用程序主结构
 struct WaqlApp {
+    /// WAAPI 客户端实例
+    client: WaapiClient,
     /// 用户输入的 WAQL 代码
     code: String,
     /// 查询执行结果或错误信息
@@ -66,6 +70,7 @@ impl Default for WaqlApp {
     fn default() -> Self {
         let syntax = waql_syntax();
         Self {
+            client: WaapiClient::default(),
             code: String::new(),
             result: String::new(),
             theme: ColorTheme::GRUVBOX,
@@ -81,6 +86,7 @@ impl WaqlApp {
     fn new(_cc: &CreationContext) -> Self {
         let syntax = waql_syntax();
         Self {
+            client: WaapiClient::default(),
             code: String::new(),
             result: String::new(),
             theme: ColorTheme::GRUVBOX,
@@ -98,9 +104,10 @@ impl WaqlApp {
             return;
         }
 
-        match waql_query(query, None) {
+        match self.client.waql_query(query, None) {
             Ok(result) => {
-                self.result = format!("{:#?}", result);
+                self.result = to_string_pretty(&result)
+                    .unwrap_or_else(|_| "Failed to format result".to_string());
             }
             Err(e) => {
                 self.result = format!("Error: {}", e);
@@ -181,10 +188,20 @@ impl eframe::App for WaqlApp {
 
             ui.separator();
 
-            // 运行按钮
-            if ui.button("Run").clicked() {
-                self.execute_query();
-            }
+            // 水平布局
+            ui.horizontal(|ui| {
+                // 运行按钮
+                if ui.button("Run").clicked() {
+                    self.execute_query();
+                }
+
+                // 清空按钮
+                if ui.button("Clear").clicked() {
+                    self.result.clear();
+                }
+            });
+
+            ui.separator();
 
             // 结果显示区域
             egui::ScrollArea::both()
