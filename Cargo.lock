@@ -3179,6 +3179,7 @@ dependencies = [
  "eframe",
  "egui",
  "egui_code_editor",
+ "serde",
  "serde_json",
  "waapi-rs",
 ]

@@ -4,8 +4,12 @@ use eframe::{self, CreationContext, egui};
 use egui::{TextBuffer, TextEdit};
 use egui_code_editor::{ColorTheme, Completer, Syntax, Token};
 
+use serde_json::Value;
+use serde_json::json;
 use serde_json::to_string_pretty;
 use waapi_rs::WaapiClient;
+use waql_tool::WAAPI_ACCESSORS;
+use waql_tool::WAAPI_PROPERTIES;
 use waql_tool::waql_syntax;
 
 // UI 常量
@@ -69,13 +73,18 @@ struct WaqlApp {
 impl Default for WaqlApp {
     fn default() -> Self {
         let syntax = waql_syntax();
+        let mut completer = Completer::new_with_syntax(&syntax).with_user_words();
+        for word in WAAPI_PROPERTIES.iter().chain(WAAPI_ACCESSORS.iter()) {
+            completer.push_word(word);
+        }
+
         Self {
             client: WaapiClient::default(),
             code: String::new(),
             result: String::new(),
             theme: ColorTheme::GRUVBOX,
             syntax: syntax.clone(),
-            completer: Completer::new_with_syntax(&syntax).with_user_words(),
+            completer: completer,
             fontsize: DEFAULT_FONT_SIZE,
         }
     }
@@ -84,27 +93,35 @@ impl Default for WaqlApp {
 impl WaqlApp {
     /// 创建新的 WaqlApp 实例
     fn new(_cc: &CreationContext) -> Self {
-        let syntax = waql_syntax();
-        Self {
-            client: WaapiClient::default(),
-            code: String::new(),
-            result: String::new(),
-            theme: ColorTheme::GRUVBOX,
-            syntax: syntax.clone(),
-            completer: Completer::new_with_syntax(&syntax).with_user_words(),
-            fontsize: DEFAULT_FONT_SIZE,
-        }
+        Self::default()
     }
 
     /// 执行 WAQL 查询并更新结果
     fn execute_query(&mut self) {
-        let query = self.code.trim();
+        let mut query = self.code.trim();
+        let mut options: Option<Value> = None;
         if query.is_empty() {
             self.result = String::from("Please enter a WAQL statement.");
             return;
         }
+        
+        // 如果 | 包含在 WAQL 语句中，说明是包含 options 的复杂查询
+        // 切分语句和选项部分
+        if let Some((query_part, options_part)) = query.split_once('|') {
+            query = query_part.trim();
+            let options_str = options_part.trim();
+            options = if options_str.is_empty() {
+                None
+            } else {
+                Some(json!({
+                    "return": options_str
+                    .split_whitespace()
+                    .collect::<Vec<&str>>()
+                }))
+            };
+        }
 
-        match self.client.waql_query(query, None) {
+        match self.client.waql_query(query, options) {
             Ok(result) => {
                 self.result = to_string_pretty(&result)
                     .unwrap_or_else(|_| "Failed to format result".to_string());
