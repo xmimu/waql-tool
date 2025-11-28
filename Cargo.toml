@@ -7,6 +7,9 @@ edition = "2024"
 eframe = "0.33.2"
 egui = "0.33.2"
 egui_code_editor = "0.2.20"
+egui_extras = "0.33.2"
 serde_json = "1"
-serde = "1"
+serde = { version = "1", features = ["derive"] }
 waapi-rs = { git = "https://github.com/xmimu/waapi-rs.git" }
+rfd = "0.15"
+csv = "1.3"
