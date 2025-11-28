@@ -1,4 +1,11 @@
-// WAAPI 内置访问器列表
+//! WAAPI 属性和访问器定义
+//! 
+//! 包含所有 WAAPI (Wwise Authoring API) 的内置属性和访问器列表，
+//! 用于代码补全和语法验证
+
+/// WAAPI 内置访问器列表
+/// 
+/// 这些访问器可以在 WAQL 查询中使用，用于访问 Wwise 对象的各种属性
 pub const WAAPI_ACCESSORS: &[&str] = &[
     "id",
     "name",

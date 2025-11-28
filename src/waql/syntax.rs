@@ -1,7 +1,17 @@
+//! WAQL 语法定义
+//!
+//! 定义 WAQL (Wwise Authoring Query Language) 的语法规则，
+//! 包括关键字、类型和特殊符号
+
 use std::collections::BTreeSet;
 
 use egui_code_editor::Syntax;
 
+/// 创建 WAQL 语法定义
+///
+/// # Returns
+///
+/// 返回配置好的 WAQL 语法对象，用于代码编辑器的语法高亮
 pub fn waql_syntax() -> Syntax {
     Syntax {
         language: "waql",
@@ -22,7 +32,7 @@ pub fn waql_syntax() -> Syntax {
             "AcousticTexture",
             "Action",
             "ActionException",
-            "ArgumentsSlot",
+            "ActorMixer",
             "Attenuation",
             "AudioDevice",
             "AudioFileSource",
@@ -39,7 +49,6 @@ pub fn waql_syntax() -> Syntax {
             "DialogueEvent",
             "Effect",
             "EffectSlot",
-            "EntryPathSlot",
             "Event",
             "ExternalSource",
             "ExternalSourceFile",
@@ -47,12 +56,7 @@ pub fn waql_syntax() -> Syntax {
             "GameParameter",
             "Language",
             "Marker",
-            "MediaPoolDatabase",
-            "MediaPoolDatabasePath",
-            "MediaPoolFilter",
-            "MediaPoolQuery",
             "Metadata",
-            "MetadataSlot",
             "MidiFileSource",
             "MidiParameter",
             "MixingSession",
@@ -61,7 +65,6 @@ pub fn waql_syntax() -> Syntax {
             "ModulatorLfo",
             "ModulatorTime",
             "MultiSwitchEntry",
-            "MusicArgumentsSlot",
             "MusicClip",
             "MusicClipMidi",
             "MusicCue",
@@ -79,23 +82,19 @@ pub fn waql_syntax() -> Syntax {
             "Panner",
             "Path2D",
             "Platform",
-            "PlaylistSlot",
             "PluginDataSource",
             "Position",
             "Project",
-            "PropertyContainer",
             "Query",
-            "RandomSequenceContainer",
             "RTPC",
+            "RandomSequenceContainer",
             "SearchCriteria",
-            "SidechainMix",
             "Sound",
             "SoundBank",
             "SoundcasterSession",
             "SourcePlugin",
             "State",
             "StateGroup",
-            "StateGroupInfo",
             "Switch",
             "SwitchContainer",
             "SwitchGroup",
