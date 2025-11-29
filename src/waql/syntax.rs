@@ -27,6 +27,28 @@ pub fn waql_syntax() -> Syntax {
             "parent",
             "ancestors",
             "referencesTo",
+            "owner",
+            "randomizer",
+            "state",
+            "workunit",
+            "musicTransitionRoot",
+            "musicTransitionObject",
+            "musicPlaylistRoot",
+            "maxDurationSource",
+            "maxDurationSourceObject",
+            "maxRadiusAttenuation",
+            "maxRadiusAttenuationObject",
+            "audioSourceLanguage",
+            "switchContainerChildContext",
+            "switchGroupGameParameter",
+            "panner",
+            "stateGroups",
+            "customStates",
+            "originalState",
+            "extractEvents",
+            "extractStructures",
+            "extractMedia",
+            "soundbanksReferencingEvent",
         ]),
         types: BTreeSet::from([
             "AcousticTexture",
@@ -103,7 +125,8 @@ pub fn waql_syntax() -> Syntax {
             "WorkUnit",
         ]),
         special: BTreeSet::from([
-            "$", "@", "from", "where", "skip", "take", "select", "orderby", "distinct",
+            "$", "@", "from", "where", "skip", "take", "select", "orderby", "distinct", "any",
+            "all", "first", "last", "at", "and", "or"
         ]),
         ..Syntax::default()
     }
